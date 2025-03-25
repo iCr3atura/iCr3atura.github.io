@@ -360,13 +360,12 @@ function recordAndExportAudio(device) {
 
   // UI feedback
   let remaining = duration;
-  console.log('Recording started...');
   document.getElementById('export-audio').disabled = true;
 
   const token = setInterval(() => {
     let rm_str = remaining < 0 ? "0" : `${remaining}`;
     remaining--;
-    let ct = `Recording (${rm_str}s)...`;
+    let ct = `запись (${rm_str}с)...`;
     document.getElementById('export-audio').textContent = ct;
   }, 1000);
 
@@ -405,7 +404,7 @@ function exportAudioBuffer(audioData, sampleRate) {
 
   // Reset UI
   document.getElementById('export-audio').disabled = false;
-  document.getElementById('export-audio').textContent = 'Record & Export Audio';
+  document.getElementById('export-audio').textContent = 'записать и скачать аудио-анамнез';
   console.log('Recording exported as WAV');
 }
 
