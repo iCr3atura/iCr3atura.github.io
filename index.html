@@ -24,11 +24,17 @@
     <script type="text/javascript" src="js/app.js"></script>
 
     <script type="text/javascript">
+        const button = document.getElementById('export-audio');
+        button.disabled = true;
         let done = false;
         document.addEventListener("click", async () => {
             if (!done) {
                 done = true;
                 const device = await setup();
+                button.disabled = false;
+                button.addEventListener('click', () => {
+                    recordAndExportAudio(device);
+                });
                 await loadSheet(device);
             }
         });
