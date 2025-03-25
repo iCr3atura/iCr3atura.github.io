@@ -27,7 +27,7 @@
         const button = document.getElementById('export-audio');
         button.disabled = true;
         let done = false;
-        document.addEventListener("click", async () => {
+        // document.addEventListener("click", async () => {
             if (!done) {
                 done = true;
                 const device = await setup();
@@ -37,7 +37,7 @@
                 });
                 await loadSheet(device);
             }
-        });
+        // });
     </script>
 </body>
 
