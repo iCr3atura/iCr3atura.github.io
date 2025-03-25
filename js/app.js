@@ -28,10 +28,10 @@ async function setup() {
         };
         if (response && (response.status >= 300 || response.status < 200)) {
             errorContext.header = `Couldn't load patcher export bundle`,
-            errorContext.description = `Check app.js to see what file it's trying to load. Currently it's` +
-            ` trying to load "${patchExportURL}". If that doesn't` +
-            ` match the name of the file you exported from RNBO, modify` +
-            ` patchExportURL in app.js.`;
+                errorContext.description = `Check app.js to see what file it's trying to load. Currently it's` +
+                ` trying to load "${patchExportURL}". If that doesn't` +
+                ` match the name of the file you exported from RNBO, modify` +
+                ` patchExportURL in app.js.`;
         }
         if (typeof guardrails === "function") {
             guardrails(errorContext);
@@ -49,7 +49,7 @@ async function setup() {
 
         // Prepend "export" to any file dependenciies
         dependencies = dependencies.map(d => d.file ? Object.assign({}, d, { file: "export/" + d.file }) : d);
-    } catch (e) {}
+    } catch (e) { }
 
     // Create the device
     let device;
@@ -91,105 +91,11 @@ function loadRNBOScript(version) {
         const el = document.createElement("script");
         el.src = "https://c74-public.nyc3.digitaloceanspaces.com/rnbo/" + encodeURIComponent(version) + "/rnbo.min.js";
         el.onload = resolve;
-        el.onerror = function(err) {
+        el.onerror = function (err) {
             console.log(err);
             reject(new Error("Failed to load rnbo.js v" + version));
         };
         document.body.append(el);
-    });
-}
-
-function makeSliders(device) {
-    let pdiv = document.getElementById("rnbo-parameter-sliders");
-    let noParamLabel = document.getElementById("no-param-label");
-    if (noParamLabel && device.numParameters > 0) pdiv.removeChild(noParamLabel);
-
-    // This will allow us to ignore parameter update events while dragging the slider.
-    let isDraggingSlider = false;
-    let uiElements = {};
-
-    device.parameters.forEach(param => {
-        // Subpatchers also have params. If we want to expose top-level
-        // params only, the best way to determine if a parameter is top level
-        // or not is to exclude parameters with a '/' in them.
-        // You can uncomment the following line if you don't want to include subpatcher params
-
-        //if (param.id.includes("/")) return;
-
-        // Create a label, an input slider and a value display
-        let label = document.createElement("label");
-        let slider = document.createElement("input");
-        let text = document.createElement("input");
-        let sliderContainer = document.createElement("div");
-        sliderContainer.appendChild(label);
-        sliderContainer.appendChild(slider);
-        sliderContainer.appendChild(text);
-
-        // Add a name for the label
-        label.setAttribute("name", param.name);
-        label.setAttribute("for", param.name);
-        label.setAttribute("class", "param-label");
-        label.textContent = `${param.name}: `;
-
-        // Make each slider reflect its parameter
-        slider.setAttribute("type", "range");
-        slider.setAttribute("class", "param-slider");
-        slider.setAttribute("id", param.id);
-        slider.setAttribute("name", param.name);
-        slider.setAttribute("min", param.min);
-        slider.setAttribute("max", param.max);
-        if (param.steps > 1) {
-            slider.setAttribute("step", (param.max - param.min) / (param.steps - 1));
-        } else {
-            slider.setAttribute("step", (param.max - param.min) / 1000.0);
-        }
-        slider.setAttribute("value", param.value);
-
-        // Make a settable text input display for the value
-        text.setAttribute("value", param.value.toFixed(1));
-        text.setAttribute("type", "text");
-
-        // Make each slider control its parameter
-        slider.addEventListener("pointerdown", () => {
-            isDraggingSlider = true;
-        });
-        slider.addEventListener("pointerup", () => {
-            isDraggingSlider = false;
-            slider.value = param.value;
-            text.value = param.value.toFixed(1);
-        });
-        slider.addEventListener("input", () => {
-            let value = Number.parseFloat(slider.value);
-            param.value = value;
-        });
-
-        // Make the text box input control the parameter value as well
-        text.addEventListener("keydown", (ev) => {
-            if (ev.key === "Enter") {
-                let newValue = Number.parseFloat(text.value);
-                if (isNaN(newValue)) {
-                    text.value = param.value;
-                } else {
-                    newValue = Math.min(newValue, param.max);
-                    newValue = Math.max(newValue, param.min);
-                    text.value = newValue;
-                    param.value = newValue;
-                }
-            }
-        });
-
-        // Store the slider and text by name so we can access them later
-        uiElements[param.id] = { slider, text };
-
-        // Add the slider element
-        pdiv.appendChild(sliderContainer);
-    });
-
-    // Listen to parameter changes from the device
-    device.parameterChangeEvent.subscribe(param => {
-        if (!isDraggingSlider)
-            uiElements[param.id].slider.value = param.value;
-        uiElements[param.id].text.value = param.value.toFixed(1);
     });
 }
 
@@ -250,4 +156,70 @@ function attachOutports(device) {
 
         document.getElementById("rnbo-console-readout").innerText = `${ev.tag}: ${ev.payload}`;
     });
+}
+async function loadSheet() {
+    const spreadsheetId = '1Tm9vhRCIFSM28BVAtu8VlBzAjOeiKm0JEBJv9LuNCiQ';
+    const apiKey = 'AIzaSyBfyFdsfsU5kOj5eUXjkpWRrUhFxkWiFWo';
+    const range = 'Sheet1!A:M';
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    const latest = data.values[data.values.length - 1];
+    // document.getElementById('displayText').innerText = latestText;
+    // console.log('Latest text:', latestText);
+
+    // const letterCount = latestText.replace(/[^a-zA-Z]/g, '').length;
+    // console.log('Letter count:', letterCount);
+    let age = latest[0];
+    try {
+        age = parseInt(age)
+    } catch (error) {
+        age = 0
+    }
+    let sex = latest[1];
+    if (sex == 'женский') { sex = 0 } else if (sex == 'мужской') { sex = 1 } else { sex = 2 }
+    const conditions = latest[2];
+    const habits = latest[3];
+    const child_illnesses = latest[4];
+    const chronical_illnesses = latest[5];
+    const invasions = latest[6];
+    const traumas = latest[7];
+    const allergy = latest[8];
+    const genetics = latest[9];
+    const stds = latest[10];
+    const main = latest[11];
+    const main_prog = latest[12];
+
+    const totalLength = latest.map(str => str.length).reduce((sum, len) => sum + len, 0);
+    const wordCount = latest.map(str => str.split(/\s+/).length).reduce((sum, len) => sum + len, 0);
+    function findMostUsedUnicodeSymbol(inputString) {
+        const charCount = {};
+        const chars = [...inputString];
+        for (const char of chars) {
+            charCount[char] = (charCount[char] || 0) + 1;
+        }
+        let mostUsedSymbol = null;
+        let maxCount = 0;
+
+        for (const [char, count] of Object.entries(charCount)) {
+            if (count > maxCount) {
+                mostUsedSymbol = char;
+                maxCount = count;
+            }
+        }
+
+        return {
+            symbol: mostUsedSymbol.codePointAt(0),
+            count: maxCount,
+        };
+    }
+    const { symbol, count } = findMostUsedUnicodeSymbol(latest.join(''))
+    const variables = {age, sex, totalLength, wordCount, symbol, count};
+    for (const [key, value] of Object.entries(variables)) {
+        device.parameters.get(key).value = value;
+    }
 }
