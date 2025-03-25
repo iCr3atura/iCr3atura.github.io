@@ -34,7 +34,7 @@
             if (!done) {
                 done = true;
                 const device = await setup();
-                loadSheet(device);
+                await loadSheet(device);
             }
         });
     </script>

@@ -216,11 +216,61 @@ async function loadSheet(device) {
             count: maxCount,
         };
     }
-    const { symbol, count } = findMostUsedUnicodeSymbol(latest.join(''))
-    const variables = {age, sex, totalLenght: totalLength, totalWords: wordCount, symbol, count};
+
+    const joined = latest.join('')
+    const { symbol, count } = findMostUsedUnicodeSymbol(joined)
+    const total_gr = count_substr('гр', joined)
+    const total_rak = count_substr('рак', joined) + count_substr('опух', joined) + count_substr('злокачеств', joined)
+    const total_traum = count_substr('травм', joined)
+    const total_smert = count_substr('смерт', joined) + count_substr('летал', joined)
+    const total_hron = count_substr('хрон', joined)
+    const total_lom = count_substr('лом', joined)
+
+    const smoke = habits.includes('кур', 0);
+    const alco = habits.includes('алко', 0) || habits.includes('пил', 0);
+    const drugs = habits.includes('нарк', 0) || habits.includes('микродоз', 0);
+    let addiction = undefined
+
+    if (!smoke && !alco && !drugs) {
+        addiction = 0;
+    } else if (smoke && !alco && !drugs) {
+        addiction = 1;
+    } else if (!smoke && alco && !drugs) {
+        addiction = 2;
+    } else if (!smoke && !alco && drugs) {
+        addiction = 3;
+    } else if (smoke && alco && !drugs) {
+        addiction = 4;
+    } else if (!smoke && alco && drugs) {
+        addiction = 5;
+    } else if (smoke && !alco && drugs) {
+        addiction = 6;
+    } else {
+        addiction = 7;
+    }
+
+    const stds_count = stds.includes('нет', 0) ? 0 : 1;
+    const vetryanka = child_illnesses.includes('ветр', 0) ? 1 : 0;
+
+    const allergies = allergy.split(/\s+/).length;
+    const progression = main_prog.split(/\s+/).length;
+
+    const variables = {
+        age, sex, totalLenght: totalLength, totalWords: wordCount, symbol, count, total_gr, total_rak, total_traum,
+        total_smert, total_hron, total_lom, addiction, stds: stds_count, vetryanka, allergies, progression
+    };
+    
     console.log(variables)
     for (const [key, value] of Object.entries(variables)) {
-      // debugger
+        // debugger
         device.parametersById.get(key).value = value;
     }
 }
+
+function count_substr(substring, value) {
+    let regex = new RegExp(substring, 'g');
+    let matches = str.match(regex) || [];
+    return matches.length;
+}
+
+
