@@ -71,9 +71,6 @@ async function setup() {
     // Connect the device to the web audio graph
     device.node.connect(outputNode);
 
-    // (Optional) Automatically create sliders for the device parameters
-    makeSliders(device);
-
     document.body.onclick = () => {
         context.resume();
     }
@@ -81,6 +78,8 @@ async function setup() {
     // Skip if you're not using guardrails.js
     if (typeof guardrails === "function")
         guardrails();
+
+    return device;
 }
 
 function loadRNBOScript(version) {
@@ -157,7 +156,7 @@ function attachOutports(device) {
         document.getElementById("rnbo-console-readout").innerText = `${ev.tag}: ${ev.payload}`;
     });
 }
-async function loadSheet() {
+async function loadSheet(device) {
     const spreadsheetId = '1Tm9vhRCIFSM28BVAtu8VlBzAjOeiKm0JEBJv9LuNCiQ';
     const apiKey = 'AIzaSyBfyFdsfsU5kOj5eUXjkpWRrUhFxkWiFWo';
     const range = 'Sheet1!A:M';
@@ -218,8 +217,10 @@ async function loadSheet() {
         };
     }
     const { symbol, count } = findMostUsedUnicodeSymbol(latest.join(''))
-    const variables = {age, sex, totalLength, wordCount, symbol, count};
+    const variables = {age, sex, totalLenght: totalLength, totalWords: wordCount, symbol, count};
+    console.log(variables)
     for (const [key, value] of Object.entries(variables)) {
-        device.parameters.get(key).value = value;
+      // debugger
+        device.parametersById.get(key).value = value;
     }
 }

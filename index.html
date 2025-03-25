@@ -30,11 +30,11 @@
 
     <script type="text/javascript">
         let done = false;
-        document.addEventListener("click", () => {
+        document.addEventListener("click", async () => {
             if (!done) {
                 done = true;
-                setup();
-                loadSheet();
+                const device = await setup();
+                loadSheet(device);
             }
         });
     </script>
