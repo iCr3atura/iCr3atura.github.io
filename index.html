@@ -24,6 +24,7 @@
     <script type="text/javascript" src="js/app.js"></script>
 
     <script type="text/javascript">
+        async function load() {
         const button = document.getElementById('export-audio');
         button.disabled = true;
         let done = false;
@@ -38,6 +39,8 @@
                 await loadSheet(device);
             }
         // });
+        }
+        load()
     </script>
 </body>
 
