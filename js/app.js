@@ -396,7 +396,7 @@ function exportAudioBuffer(audioData, sampleRate) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'rnbo_output.wav';
+  link.download = 'your_anamnes.wav';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
