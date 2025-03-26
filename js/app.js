@@ -222,7 +222,7 @@ async function loadSheet(device) {
   const total_gr = count_substr('гр', joined)
   const total_rak = count_substr('рак', joined) + count_substr('опух', joined) + count_substr('злокачеств', joined)
   const total_traum = count_substr('травм', joined)
-  const total_smert = count_substr('смерт', joined) + count_substr('летал', joined)
+  const total_smert = count_substr('смерт', joined) + count_substr('летал', joined) + count_substr('умер', joined) + count_substr('омер', joined)
   const total_hron = count_substr('хрон', joined)
   const total_lom = count_substr('лом', joined)
 
