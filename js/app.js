@@ -324,7 +324,7 @@ function recordAndExportAudio(device) {
 
   const context = device.context;
   const sampleRate = context.sampleRate;
-  const duration = 60; // 1 minute
+  const duration = 180; // 3 minutes
   const bufferSize = 4096; // Common buffer size for ScriptProcessorNode
   const numChannels = 2; // Stereo
   const totalSamples = sampleRate * duration;
@@ -369,7 +369,7 @@ function recordAndExportAudio(device) {
     document.getElementById('export-audio').textContent = ct;
   }, 1000);
 
-  // Stop after 60 seconds if not already stopped
+  // Stop after 180 seconds if not already stopped
   setTimeout(() => {
     if (audioData.index < totalSamples) {
       recorder.disconnect();
