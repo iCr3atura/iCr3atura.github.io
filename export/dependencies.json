@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "lom",
+    "file": "media\\2.wav"
+  },
+  {
+    "id": "std",
+    "file": "media\\1.0.wav"
+  },
+  {
+    "id": "vetr",
+    "file": "media\\756469__cabled_mess__synthetic-watery-bubbles-01_layer-04_dry_quad.flac"
+  }
+]

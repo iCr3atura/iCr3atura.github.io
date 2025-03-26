@@ -256,8 +256,8 @@ async function loadSheet(device) {
   const progression = main_prog.split(/\s+/).length;
 
   const variables = {
-    age, sex, totalLenght: totalLength, totalWords: wordCount, symbol, count, // total_gr, total_rak, total_traum,
-    // total_smert, total_hron, total_lom, addiction, stds: stds_count, vetryanka, allergies, progression
+    age, sex, totalLenght: totalLength, totalWords: wordCount, symbol, count, total_gr, total_rak, total_traum,
+    total_smert, total_hron, total_lom, addiction, stds: stds_count, vetryanka, allergies, progression
   };
 
   console.log(variables)
